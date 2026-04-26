@@ -1,0 +1,107 @@
+Build a production-level MERN web application called "Smart Volunteer Allocation System".
+
+STRICT REQUIREMENTS:
+- Frontend: React (Vite) + Tailwind CSS
+- Use modern UI/UX principles (clean, minimal, glassmorphism, smooth animations)
+- Backend: Node.js + Express
+- Database: MongoDB Atlas
+- AI Integration: Google Gemini API
+- Deployment-ready for Google Cloud Run (backend) and Vercel (frontend)
+
+---------------------------------------
+
+🌐 UI/UX REQUIREMENTS (VERY IMPORTANT):
+
+Design a premium dashboard-style interface:
+
+1. Layout:
+- Sidebar navigation (Dashboard, Volunteers, Emergency, Analytics)
+- Top navbar with profile + notifications
+- Dark mode default
+
+2. Design Style:
+- Glassmorphism cards (blur + transparency)
+- Soft shadows + rounded corners
+- Smooth hover animations
+- Gradient buttons
+
+3. Pages:
+
+A. Dashboard:
+- Active emergencies (cards with severity color: red/yellow/green)
+- Assigned volunteers
+- Stats (Total volunteers, Active cases)
+
+B. Volunteer Management:
+- Add/Edit volunteers
+- Cards showing:
+  - Name
+  - Skill badge
+  - Availability toggle
+
+C. Emergency Panel:
+- Input box (or voice input optional)
+- “Analyze & Assign” button
+- AI output panel (structured)
+
+D. Analytics (basic):
+- Count of emergencies handled
+- Response time (mock data acceptable)
+
+---------------------------------------
+
+🤖 GEMINI AI INTEGRATION:
+
+Use Google Gemini API.
+
+Prompt:
+
+"You are an intelligent emergency response AI.
+Analyze the situation and assign volunteers efficiently.
+
+Return STRICT JSON:
+{
+  "priority": "Low | Medium | High | Critical",
+  "required_skills": [],
+  "assigned_volunteers": [],
+  "reason": "",
+  "estimated_response_time": ""
+}"
+
+---------------------------------------
+
+⚙️ BACKEND:
+
+- REST APIs:
+  - POST /volunteers
+  - GET /volunteers
+  - POST /emergency/analyze
+- Clean MVC structure
+- Use dotenv for API keys
+
+---------------------------------------
+
+✨ ADVANCED FEATURES:
+
+- Loading animations (AI thinking…)
+- Toast notifications
+- Status update (Resolved / Active)
+- Search & filter volunteers
+
+---------------------------------------
+
+☁️ CLOUD DEPLOYMENT:
+
+Prepare backend for Google Cloud Run:
+- Add Dockerfile
+- Use process.env.PORT
+- Provide deployment steps
+
+---------------------------------------
+
+🎯 FINAL GOAL:
+
+- Clean, modern, premium UI
+- Fast and responsive
+- Fully working AI-based allocation system
+- Beginner-friendly code but professional output

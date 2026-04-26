@@ -3,13 +3,19 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Smart Volunteer Allocation System API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: volunteers
+    description: Volunteer management
+  - name: emergencies
+    description: Emergency management
+  - name: analytics
+    description: Analytics and statistics
 paths:
   /healthz:
     get:
@@ -24,6 +30,321 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /volunteers:
+    get:
+      operationId: getVolunteers
+      tags: [volunteers]
+      summary: Get all volunteers
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by name or skill
+        - name: available
+          in: query
+          schema:
+            type: boolean
+          description: Filter by availability
+        - name: skill
+          in: query
+          schema:
+            type: string
+          description: Filter by skill
+      responses:
+        "200":
+          description: List of volunteers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Volunteer"
+    post:
+      operationId: createVolunteer
+      tags: [volunteers]
+      summary: Create a new volunteer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVolunteerBody"
+      responses:
+        "201":
+          description: Volunteer created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Volunteer"
+
+  /volunteers/{id}:
+    get:
+      operationId: getVolunteer
+      tags: [volunteers]
+      summary: Get a volunteer by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Volunteer details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Volunteer"
+        "404":
+          description: Not found
+    put:
+      operationId: updateVolunteer
+      tags: [volunteers]
+      summary: Update a volunteer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateVolunteerBody"
+      responses:
+        "200":
+          description: Updated volunteer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Volunteer"
+    delete:
+      operationId: deleteVolunteer
+      tags: [volunteers]
+      summary: Delete a volunteer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                required:
+                  - success
+
+  /volunteers/{id}/availability:
+    patch:
+      operationId: toggleVolunteerAvailability
+      tags: [volunteers]
+      summary: Toggle volunteer availability
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                available:
+                  type: boolean
+              required:
+                - available
+      responses:
+        "200":
+          description: Updated volunteer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Volunteer"
+
+  /emergencies:
+    get:
+      operationId: getEmergencies
+      tags: [emergencies]
+      summary: Get all emergencies
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [Active, Resolved]
+          description: Filter by status
+      responses:
+        "200":
+          description: List of emergencies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Emergency"
+    post:
+      operationId: createEmergency
+      tags: [emergencies]
+      summary: Create a new emergency record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEmergencyBody"
+      responses:
+        "201":
+          description: Emergency created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Emergency"
+
+  /emergencies/{id}:
+    get:
+      operationId: getEmergency
+      tags: [emergencies]
+      summary: Get an emergency by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Emergency details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Emergency"
+
+  /emergencies/{id}/status:
+    patch:
+      operationId: updateEmergencyStatus
+      tags: [emergencies]
+      summary: Update emergency status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [Active, Resolved]
+              required:
+                - status
+      responses:
+        "200":
+          description: Updated emergency
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Emergency"
+
+  /emergency/analyze:
+    post:
+      operationId: analyzeEmergency
+      tags: [emergencies]
+      summary: Analyze emergency and assign volunteers using AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeEmergencyBody"
+      responses:
+        "200":
+          description: AI analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmergencyAnalysis"
+
+  /analytics/summary:
+    get:
+      operationId: getAnalyticsSummary
+      tags: [analytics]
+      summary: Get dashboard analytics summary
+      responses:
+        "200":
+          description: Analytics summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsSummary"
+
+  /analytics/recent-emergencies:
+    get:
+      operationId: getRecentEmergencies
+      tags: [analytics]
+      summary: Get recent emergencies for dashboard
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 5
+      responses:
+        "200":
+          description: Recent emergencies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Emergency"
+
+  /analytics/priority-breakdown:
+    get:
+      operationId: getPriorityBreakdown
+      tags: [analytics]
+      summary: Get emergency count by priority
+      responses:
+        "200":
+          description: Priority breakdown
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PriorityBreakdown"
+
+  /analytics/skill-demand:
+    get:
+      operationId: getSkillDemand
+      tags: [analytics]
+      summary: Get most demanded volunteer skills
+      responses:
+        "200":
+          description: Skill demand data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SkillDemandItem"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +355,239 @@ components:
       required:
         - status
 
+    Volunteer:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        available:
+          type: boolean
+        location:
+          type: string
+        totalAssignments:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - email
+        - skills
+        - available
+        - totalAssignments
+        - createdAt
+        - updatedAt
+
+    CreateVolunteerBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        available:
+          type: boolean
+        location:
+          type: string
+      required:
+        - name
+        - email
+        - skills
+
+    UpdateVolunteerBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        available:
+          type: boolean
+        location:
+          type: string
+
+    Emergency:
+      type: object
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        priority:
+          type: string
+          enum: [Low, Medium, High, Critical]
+        status:
+          type: string
+          enum: [Active, Resolved]
+        requiredSkills:
+          type: array
+          items:
+            type: string
+        assignedVolunteers:
+          type: array
+          items:
+            type: string
+        reason:
+          type: string
+        estimatedResponseTime:
+          type: string
+        location:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        resolvedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - id
+        - description
+        - priority
+        - status
+        - requiredSkills
+        - assignedVolunteers
+        - createdAt
+
+    CreateEmergencyBody:
+      type: object
+      properties:
+        description:
+          type: string
+        priority:
+          type: string
+          enum: [Low, Medium, High, Critical]
+        location:
+          type: string
+        requiredSkills:
+          type: array
+          items:
+            type: string
+        assignedVolunteers:
+          type: array
+          items:
+            type: string
+        reason:
+          type: string
+        estimatedResponseTime:
+          type: string
+      required:
+        - description
+        - priority
+
+    AnalyzeEmergencyBody:
+      type: object
+      properties:
+        description:
+          type: string
+        location:
+          type: string
+      required:
+        - description
+
+    EmergencyAnalysis:
+      type: object
+      properties:
+        priority:
+          type: string
+          enum: [Low, Medium, High, Critical]
+        required_skills:
+          type: array
+          items:
+            type: string
+        assigned_volunteers:
+          type: array
+          items:
+            type: string
+        reason:
+          type: string
+        estimated_response_time:
+          type: string
+        emergencyId:
+          type: string
+      required:
+        - priority
+        - required_skills
+        - assigned_volunteers
+        - reason
+        - estimated_response_time
+
+    AnalyticsSummary:
+      type: object
+      properties:
+        totalVolunteers:
+          type: integer
+        availableVolunteers:
+          type: integer
+        totalEmergencies:
+          type: integer
+        activeEmergencies:
+          type: integer
+        resolvedEmergencies:
+          type: integer
+        avgResponseTime:
+          type: string
+        criticalCases:
+          type: integer
+      required:
+        - totalVolunteers
+        - availableVolunteers
+        - totalEmergencies
+        - activeEmergencies
+        - resolvedEmergencies
+        - avgResponseTime
+        - criticalCases
+
+    PriorityBreakdown:
+      type: object
+      properties:
+        Low:
+          type: integer
+        Medium:
+          type: integer
+        High:
+          type: integer
+        Critical:
+          type: integer
+      required:
+        - Low
+        - Medium
+        - High
+        - Critical
+
+    SkillDemandItem:
+      type: object
+      properties:
+        skill:
+          type: string
+        count:
+          type: integer
+      required:
+        - skill
+        - count
