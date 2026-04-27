@@ -8,6 +8,6 @@ git remote add origin https://${GITHUB_TOKEN}@github.com/DIXITNAYAN/volunteer-AI
 git add .
 git commit -m "Smart Volunteer Allocation System - full build" || echo "Nothing new to commit"
 git branch -M main
-git push -u origin main --force
+GIT_ASKPASS=/bin/echo GIT_TERMINAL_PROMPT=0 git push -u origin main --force
 git remote set-url origin https://github.com/DIXITNAYAN/volunteer-AI.git
 echo "Done! Code pushed to GitHub."
