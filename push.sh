@@ -3,7 +3,7 @@ set -e
 git config user.email "nayan@volunteer-ai.com"
 git config user.name "DIXITNAYAN"
 git remote remove origin 2>/dev/null || true
-git remote add origin https://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@github.com/DIXITNAYAN/volunteer-AI.git
+git remote add origin https://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@github.com/DIXITNAYAN/volunteer-AI.git
 git add .
 git commit -m "Smart Volunteer Allocation System - full build" || echo "Nothing new to commit"
 git branch -M main
